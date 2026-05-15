@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Apply — Join Our Team</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --ink:     #0d0d0d;
+      --paper:   #faf7f2;
+      --cream:   #f0ebe0;
+      --accent:  #c8401a;
+      --muted:   #7a7060;
+      --border:  #d4ccbb;
+      --success: #2a6e3f;
+      --error:   #c8401a;
+      --field-h: 52px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 60px 20px 80px;
+    }
+
+    /* ── Page layout ── */
+    .page {
+      width: 100%;
+      max-width: 640px;
+    }
+
+    /* ── Header ── */
+    .header {
+      margin-bottom: 48px;
+      border-bottom: 1.5px solid var(--ink);
+      padding-bottom: 24px;
+    }
+
+    .header-eyebrow {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .header h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(36px, 6vw, 52px);
+      font-weight: 400;
+      line-height: 1.1;
+      color: var(--ink);
+    }
+
+    .header h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .header-sub {
+      margin-top: 14px;
+      font-size: 15px;
+      color: var(--muted);
+      font-weight: 300;
+      line-height: 1.6;
+    }
+
+    /* ── Form ── */
+    .form { display: flex; flex-direction: column; gap: 0; }
+
+    .field-group {
+      position: relative;
+      border-bottom: 1px solid var(--border);
+      padding: 20px 0 6px;
+      transition: border-color 0.2s;
+    }
+
+    .field-group:first-of-type { border-top: 1px solid var(--border); }
+
+    .field-group:focus-within { border-color: var(--ink); }
+    .field-group.error        { border-color: var(--error); }
+    .field-group.valid        { border-color: var(--success); }
+
+    .field-label {
+      display: block;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+      transition: color 0.2s;
+    }
+
+    .field-group:focus-within .field-label { color: var(--ink); }
+    .field-group.error .field-label        { color: var(--error); }
+    .field-group.valid .field-label        { color: var(--success); }
+
+    .field-input,
+    .field-textarea {
+      width: 100%;
+      background: transparent;
+      border: none;
+      outline: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 17px;
+      font-weight: 400;
+      color: var(--ink);
+      padding: 4px 0 10px;
+      caret-color: var(--accent);
+    }
+
+    .field-input::placeholder,
+    .field-textarea::placeholder { color: var(--border); }
+
+    .field-textarea {
+      resize: none;
+      min-height: 120px;
+      line-height: 1.6;
+    }
+
+    /* Status indicator dot */
+    .field-status {
+      position: absolute;
+      right: 0;
+      top: 26px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: transparent;
+      transition: background 0.2s;
+    }
+
+    .field-group.error .field-status { background: var(--error); }
+    .field-group.valid .field-status { background: var(--success); }
+
+    /* Error message */
+    .field-error {
+      font-size: 12px;
+      color: var(--error);
+      font-weight: 400;
+      min-height: 18px;
+      padding: 4px 0 2px;
+      opacity: 0;
+      transform: translateY(-4px);
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+    .field-group.error .field-error {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Character counter ── */
+    .char-count {
+      text-align: right;
+      font-size: 11px;
+      color: var(--border);
+      padding: 4px 0 2px;
+      transition: color 0.2s;
+    }
+
+    .char-count.warn { color: var(--accent); }
+
+    /* ── Submit button ── */
+    .submit-wrap {
+      margin-top: 40px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .btn-submit {
+      position: relative;
+      overflow: hidden;
+      background: var(--ink);
+      color: var(--paper);
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0 36px;
+      height: 52px;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .btn-submit::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--accent);
+      transform: translateX(-100%);
+      transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+    }
+
+    .btn-submit:hover::after  { transform: translateX(0); }
+    .btn-submit:active        { transform: scale(0.98); }
+
+    .btn-submit span { position: relative; z-index: 1; }
+
+    .submit-note {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* ── Success state ── */
+    .success-banner {
+      display: none;
+      margin-top: 32px;
+      padding: 20px 24px;
+      border: 1.5px solid var(--success);
+      border-radius: 2px;
+      background: #f0faf4;
+    }
+
+    .success-banner.show { display: block; }
+
+    .success-banner p {
+      font-size: 14px;
+      color: var(--success);
+      font-weight: 500;
+    }
+
+    .success-banner small {
+      display: block;
+      margin-top: 4px;
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 300;
+    }
+
+    /* ── Decorative rule ── */
+    .deco {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 36px;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.1em;
+    }
+
+    .deco::before, .deco::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── Fade-in animation ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .header        { animation: fadeUp 0.5s ease both; }
+    .deco          { animation: fadeUp 0.5s 0.1s ease both; }
+    .field-group   { animation: fadeUp 0.5s ease both; }
+    .field-group:nth-child(1) { animation-delay: 0.15s; }
+    .field-group:nth-child(2) { animation-delay: 0.22s; }
+    .field-group:nth-child(3) { animation-delay: 0.29s; }
+    .field-group:nth-child(4) { animation-delay: 0.36s; }
+    .submit-wrap   { animation: fadeUp 0.5s 0.44s ease both; }
+  </style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- Header -->
+  <header class="header">
+    <p class="header-eyebrow">Open Position · Full-time</p>
+    <h1>Let's work<br/><em>together.</em></h1>
+    <p class="header-sub">Tell us about yourself. We read every application personally and reply within 5 business days.</p>
+  </header>
+
+  <div class="deco">Application Form</div>
+
+  <!-- Form -->
+  <form class="form" id="appForm" novalidate>
+
+    <!-- Name -->
+    <div class="field-group" id="grp-name">
+      <div class="field-status"></div>
+      <label class="field-label" for="name">Full Name</label>
+      <input class="field-input" id="name" type="text" placeholder="Jane Doe" autocomplete="name" />
+      <p class="field-error" id="err-name">Please enter your full name.</p>
+    </div>
+
+    <!-- Email -->
+    <div class="field-group" id="grp-email">
+      <div class="field-status"></div>
+      <label class="field-label" for="email">Email Address</label>
+      <input class="field-input" id="email" type="email" placeholder="jane@example.com" autocomplete="email" />
+      <p class="field-error" id="err-email">Enter a valid email address.</p>
+    </div>
+
+    <!-- Phone -->
+    <div class="field-group" id="grp-phone">
+      <div class="field-status"></div>
+      <label class="field-label" for="phone">Phone Number</label>
+      <input class="field-input" id="phone" type="tel" placeholder="+91 98765 43210" autocomplete="tel" />
+      <p class="field-error" id="err-phone">Enter a valid phone number (min 7 digits).</p>
+    </div>
+
+    <!-- Message -->
+    <div class="field-group" id="grp-message">
+      <div class="field-status"></div>
+      <label class="field-label" for="message">Cover Note</label>
+      <textarea class="field-textarea" id="message" placeholder="Tell us why you'd be a great fit, what you've built, and what excites you about this role…" maxlength="600"></textarea>
+      <div class="char-count" id="char-count">0 / 600</div>
+      <p class="field-error" id="err-message">Please write at least 30 characters.</p>
+    </div>
+
+    <!-- Submit -->
+    <div class="submit-wrap">
+      <button class="btn-submit" type="submit"><span>Submit Application</span></button>
+      <p class="submit-note">No attachments needed.<br/>We'll request your CV if shortlisted.</p>
+    </div>
+
+  </form>
+
+  <!-- Success banner -->
+  <div class="success-banner" id="successBanner">
+    <p>✓ Application received!</p>
+    <small>Thanks for applying. We'll be in touch within 5 business days.</small>
+  </div>
+
+</div>
+
+<script>
+  const form = document.getElementById('appForm');
+
+  // ── Validators ──────────────────────────────────────────────
+  const rules = {
+    name:    { el: null, validate: v => v.trim().length >= 2,                   msg: 'Please enter your full name.' },
+    email:   { el: null, validate: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v),  msg: 'Enter a valid email address.' },
+    phone:   { el: null, validate: v => /^[\d\s\+\-\(\)]{7,}$/.test(v.trim()), msg: 'Enter a valid phone number (min 7 digits).' },
+    message: { el: null, validate: v => v.trim().length >= 30,                  msg: 'Please write at least 30 characters.' },
+  };
+
+  Object.keys(rules).forEach(id => {
+    rules[id].el = document.getElementById(id);
+    document.getElementById('err-' + id).textContent = rules[id].msg;
+  });
+
+  // ── Set field state ──────────────────────────────────────────
+  function setState(id, state) {
+    const grp = document.getElementById('grp-' + id);
+    grp.classList.remove('error', 'valid');
+    if (state) grp.classList.add(state);
+  }
+
+  // ── Live validation on blur ──────────────────────────────────
+  Object.keys(rules).forEach(id => {
+    const { el, validate } = rules[id];
+    el.addEventListener('blur', () => {
+      if (el.value === '') { setState(id, ''); return; }
+      setState(id, validate(el.value) ? 'valid' : 'error');
+    });
+    el.addEventListener('input', () => {
+      const grp = document.getElementById('grp-' + id);
+      if (grp.classList.contains('error') && validate(el.value)) setState(id, 'valid');
+    });
+  });
+
+  // ── Character counter for message ───────────────────────────
+  const msgEl    = document.getElementById('message');
+  const countEl  = document.getElementById('char-count');
+  msgEl.addEventListener('input', () => {
+    const len = msgEl.value.length;
+    countEl.textContent = len + ' / 600';
+    countEl.classList.toggle('warn', len > 540);
+  });
+
+  // ── Form submit ──────────────────────────────────────────────
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    let allValid = true;
+
+    Object.keys(rules).forEach(id => {
+      const { el, validate } = rules[id];
+      if (!validate(el.value)) {
+        setState(id, 'error');
+        allValid = false;
+      } else {
+        setState(id, 'valid');
+      }
+    });
+
+    if (!allValid) {
+      // Scroll to first error
+      const firstErr = form.querySelector('.field-group.error');
+      if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    // Success
+    form.style.opacity = '0.4';
+    form.style.pointerEvents = 'none';
+    form.style.transition = 'opacity 0.4s';
+    document.getElementById('successBanner').classList.add('show');
+    document.getElementById('successBanner').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+</script>
+</body>
+</html>
